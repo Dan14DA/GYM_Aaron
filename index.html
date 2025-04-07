@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymTrack - Sistema de Gestión</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>GymTrack</h1>
+        <p>Sistema de Gestión para tu Gimnasio Funcional</p>
+    </header>
+    
+    <nav>
+        <a href="#" onclick="openTab(event, 'clientes-tab')">Clientes</a>
+        <a href="#" onclick="openTab(event, 'asistencia-tab')">Registrar Asistencia</a>
+        <a href="#" onclick="openTab(event, 'membresias-tab')">Membresías</a>
+        <a href="#" onclick="openTab(event, 'reportes-tab')">Reportes</a>
+    </nav>
+    
+    <main class="container">
+        <!-- Tab de Clientes -->
+        <div id="clientes-tab" class="tab-content active">
+            <div class="card">
+                <h2>Gestión de Clientes</h2>
+                <div class="search-container">
+                    <input type="text" id="search-client" placeholder="Buscar cliente..." onkeyup="searchClients()">
+                    <button class="btn" onclick="openModal('modal-add-client')">Agregar Cliente</button>
+                </div>
+                
+                <table id="clients-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Membresía</th>
+                            <th>Saldo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clients-list">
+                        <!-- Los clientes se cargarán aquí con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Tab de Registrar Asistencia -->
+        <div id="asistencia-tab" class="tab-content">
+            <div class="card">
+                <h2>Registro de Asistencia</h2>
+                <div class="search-container">
+                    <input type="text" id="search-attendance" placeholder="Buscar por ID o nombre..." onkeyup="searchForAttendance()">
+                </div>
+                
+                <div id="attendance-results">
+                    <!-- Resultados de búsqueda para asistencia -->
+                </div>
+                
+                <div class="card">
+                    <h3>Últimas Asistencias</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Saldo previo</th>
+                                <th>Saldo actual</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-list">
+                            <!-- Las asistencias se cargarán aquí con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab de Membresías -->
+        <div id="membresias-tab" class="tab-content">
+            <div class="card">
+                <h2>Gestión de Membresías</h2>
+                <button class="btn" onclick="openModal('modal-add-membership')">Agregar Plan</button>
+                
+                <table id="memberships-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Créditos</th>
+                            <th>Vigencia (días)</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberships-list">
+                        <!-- Las membresías se cargarán aquí con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Tab de Reportes -->
+        <div id="reportes-tab" class="tab-content">
+            <div class="card">
+                <h2>Reportes</h2>
+                
+                <div class="form-group">
+                    <label for="report-type">Tipo de Reporte:</label>
+                    <select class="form-control" id="report-type">
+                        <option value="daily">Asistencia Diaria</option>
+                        <option value="monthly">Asistencia Mensual</option>
+                        <option value="membership">Membresías Activas</option>
+                        <option value="expiring">Membresías por Vencer</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="generateReport()">Generar Reporte</button>
+                
+                <div id="report-results" class="card" style="margin-top: 20px;">
+                    <!-- Resultados del reporte se mostrarán aquí -->
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal para Agregar Cliente -->
+    <div id="modal-add-client" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal-add-client')">&times;</span>
+            <h2>Agregar Nuevo Cliente</h2>
+            <form id="add-client-form">
+                <div class="form-group">
+                    <label for="client-name">Nombre Completo:</label>
+                    <input type="text" class="form-control" id="client-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="client-email">Email:</label>
+                    <input type="email" class="form-control" id="client-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="client-phone">Teléfono:</label>
+                    <input type="tel" class="form-control" id="client-phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="client-membership">Membresía:</label>
+                    <select class="form-control" id="client-membership" required>
+                        <!-- Las opciones se cargarán con JavaScript -->
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Guardar Cliente</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal para Agregar Membresía -->
+    <div id="modal-add-membership" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal-add-membership')">&times;</span>
+            <h2>Agregar Nuevo Plan</h2>
+            <form id="add-membership-form">
+                <div class="form-group">
+                    <label for="membership-name">Nombre del Plan:</label>
+                    <input type="text" class="form-control" id="membership-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="membership-price">Precio:</label>
+                    <input type="number" class="form-control" id="membership-price" min="0" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="membership-credits">Créditos (número de clases):</label>
+                    <input type="number" class="form-control" id="membership-credits" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="membership-duration">Vigencia (días):</label>
+                    <input type="number" class="form-control" id="membership-duration" min="1" required>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Guardar Plan</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal para Registrar Pago -->
+    <div id="modal-add-payment" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal-add-payment')">&times;</span>
+            <h2>Registrar Pago</h2>
+            <form id="add-payment-form">
+                <input type="hidden" id="payment-client-id">
+                
+                <div class="form-group">
+                    <label for="payment-client-name">Cliente:</label>
+                    <input type="text" class="form-control" id="payment-client-name" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="payment-membership">Membresía:</label>
+                    <select class="form-control" id="payment-membership" required>
+                        <!-- Las opciones se cargarán con JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="payment-amount">Monto:</label>
+                    <input type="number" class="form-control" id="payment-amount" min="0" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="payment-method">Método de Pago:</label>
+                    <select class="form-control" id="payment-method" required>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                        <option value="transferencia">Transferencia Bancaria</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Registrar Pago</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
